@@ -3,7 +3,8 @@
 #include <string.h>
 
 char input[1000][62], pass_operand[1000][62], dot[1000], result[62];
-char var[50][62]={'0'};
+char var[10][63] = {0};
+char tmp[100] = {0};
 
 int input_f(void);
 void pos_digit(int k);
@@ -29,10 +30,8 @@ int main()
     for(k = 0; k <= end; k++)
         pos_digit(k);
 
-    //변수 판단, 지정
-	if((input[0][0] >= 'A' && input[0][0] <= 'Z') || (input[0][0] >= 'a' && input[0][0] <= 'z'))
-		if(input[1][0] == '=')
-			variable();
+    //변수 판단
+    variable();
 
     //연산자 판단, 계산
     for(int i = 1; i <= end; i++)
@@ -44,8 +43,21 @@ int main()
     
     
     for(int i = 0; i <= end; i++)   //(확인작업)
-        for(int j = 0; j < 62; j++)
-            printf("pass_operand[%d][%d] = %c\n", i, j, pass_operand[i][j]);
+	{
+        printf("p_o[%d] = ", i);
+		for(int j = 0; j <= 61; j++)
+			printf("%c", pass_operand[i][j]);
+		printf("\n");
+	}
+
+	for(int i = 0; i <= 9; i++)
+	{
+		printf("vari[%d] = ", i);
+		for(int j = 0; j <= 62; j++)
+			printf("%c", var[i][j]);
+		printf("\n");
+	}
+
 
 
 	main();
@@ -139,19 +151,6 @@ void pos_digit(int k)
     return ;
 }
 
-//변수(임시)
-void variable(void)
-{
-	printf("variable call success\n");
-	if(input[0][0] >= 'a' && input[0][0] <= 'z')
-		for(int i = 0; i <= 61; i++)
-			var[input[0][0] - 'a'][i] = pass_operand[2][i];
-	if(input[0][0] >= 'A' && input[0][0] <= 'Z')
-		for(int i = 0; i <= 61; i++)
-			var[input[0][0] - 'A'][i] = pass_operand[2][i];
-	return ;
-}
-
 //// 명 령 판 단 ////
 void judg(void)
 {
@@ -164,15 +163,69 @@ void judg(void)
 	return ;
 }
 
+//// 변 수 지 정 함 수 ////
+void variable(void)
+{
+	printf("variable call\n");
+    char c;
+    int i, m, k, j;
+    // 변수를 받는 식인지 구분
+    for(c = 'A'; c <= 'z'; c++)
+    {
+        strcpy(tmp,"? = ");
+        tmp[0] = c; // tmp의 첫번째 배열이 a부터 z까지 바뀜
+        if (input[0][0] == c && input[1][0] == '=')
+        {
+            for (k = 0; k <= 61; k++)
+            {
+                if ((input[2][k] >= '0' && input[2][k] <= '9') || input[2][k] == 0) // 변수의 값에 입력되는 것이 특수문자가 아닐때
+                    m = 0;
+                else
+                {
+                    m = 1;
+                    break;
+                }
+            }
+            // 변수 저장
+            if (m == 0)
+            {
+                for (j = 0; j <= 9; j++)
+                {
+                    if (var[j][0] == 0)
+                    {
+                        var[j][0] = c;
+                        for (i = 1; i <= 62; i++)
+                        {
+                            var[j][i] = pass_operand[2][i-1];
+                        }
+                        break;
+                    }
+                }
+                
+                // 입력된 변수의 값 출력
+                printf("= ");
+                for (i = 0; i <= 61; i++)
+                    printf("%c", input[2][i]);
+                printf("\n");
+            }
+            else if (m == 1)
+                printf("= error\n");
+        }
+    }
+    return;
+}
+
+
 //// 변 수 저 장 함 수 ////
 void savef(void)
 {
 	printf("savef call\n");
     FILE *save;
-    save = fopen("var_save.txt", "w");
-    for(int i = 0; i <= 10; i++)
-        fprintf(save, "%s", pass_operand[i]);	//테스트. 변수배열로 수정 필요
-    fclose(save);
+    save = fopen("var_save.txt","w"); // var_save.txt를 쓰기 파일로 연다
+    for (int i = 0; i <= 9; i++)
+        for (int j = 0; j <= 61; j++)
+            fprintf(save, "%c", var[i][j]); // var_save.txt에 문자열을 저장
+    fclose(save); // var_save.txt 닫기
 }
 
 //// 변 수 로 드 함 수 ////
@@ -180,10 +233,11 @@ void loadf(void)
 {
 	printf("loadf call\n");
     FILE *save;
-    save = fopen("var_save.txt", "r");
-    for(int i = 0; i <= 10; i++)
-        fscanf(save, "%s", var[i]);
-    fclose(save);
+    save = fopen("var_save.txt","r"); // var_save.txt를 읽기파일로 연다
+    for (int i = 0; i <= 9; i++)
+        for (int j = 0; j <= 61; j++)
+            fscanf(save, "%c", &var[i][j]);
+    fclose(save); // var_save.txt 닫기
 }
 
 //// 사 칙 연 산 판 단 함 수 ////
@@ -225,6 +279,7 @@ int operator(int i)
         default :
 			break;
 	}
+	return 0;
 }
 
 //// 덧 셈 함 수 ////

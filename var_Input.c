@@ -25,11 +25,11 @@ void cal()
         {
                 strcpy(tmp,"? = ");
                 tmp[0] = c; // tmp의 첫번째 배열이 a부터 z까지 바뀜
-                if (a[0][0] == c && a[1][0] == '=')
+                if (input[0][0] == c && input[1][0] == '=')
                 {
                         for (k = 0; k <= 61; k++)
                         {
-                                if (a[2][k] >= '0' && a[2][k] <= '9' || a[2][k] == 0) // 변수의 값에 입력되는 것이 특수문자가 아닐때
+                                if ((input[2][k] >= '0' && input[2][k] <= '9') || input[2][k] == 0) // 변수의 값에 입력되는 것이 특수문자가 아닐때
                                 {
                                         m = 0;
                                 }
@@ -49,7 +49,7 @@ void cal()
                                                 var[j][0] = c;
                                                 for (i = 1; i <= 61; i++)
                                                 {
-                                                        var[j][i] = a[2][i-1];
+                                                        var[j][i] = input[2][i-1];
                                                 }
                                                 break;
                                         }
@@ -58,7 +58,7 @@ void cal()
                                 // 입력된 변수의 값 출력
                                 printf("= ");
                                 for (i = 0; i <= 61; i++)
-                                        printf("%c", a[2][i]);
+                                        printf("%c", input[2][i]);
                                 printf("\n");
                         }
                         else if (m == 1)
