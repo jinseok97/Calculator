@@ -1,4 +1,4 @@
-int operand(int i)
+int operator(int i)
 {
 	switch(pass_operand[i][0])
 		case '+': if (pass_operand[i-1][1]==pass_operand[i+1][1])
