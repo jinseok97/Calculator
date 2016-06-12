@@ -169,6 +169,7 @@ void variable(void)
 	printf("variable call\n");
     char c;
     int i, m, k, j;
+	int gap;
     // 변수를 받는 식인지 구분
     for(c = 'A'; c <= 'z'; c++)
     {
@@ -211,7 +212,16 @@ void variable(void)
             else if (m == 1)
                 printf("= error\n");
         }
-    }
+	}
+    gap = 'A' - 'a';
+    for (i = 0; i <= 61; i++)
+        if (input[i][0] <= 'z' && input[i][0] >= 'A') // 수식에 알파벳이 있으면
+            for(k = 0; k <= 9; k++)
+                if (input[i][0] == var[k][0] || input[i][0] + gap == var[k][0] || input[i][0] - gap == var[k][0])
+                  	// 그 알파벳이 var의 0번째 배열과 같으면
+                    // 그 값을 받은 수식의 변수부분에 넣는다
+                    for(m = j; m <= 61; m++)
+                        pass_operand[i][m] = var[k][m+1];
     return;
 }
 
