@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
- 
+
 char input[1000][62], pass_operand[1000][62], dot[1000], result[62];
 char var[10][63] = {0};
 char tmp[100] = {0};
