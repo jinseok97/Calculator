@@ -14,6 +14,7 @@ int operator(int);
 int plus_equal(int);
 void savef(void);
 void loadf(void);
+void varf(void);
 
 //// MAIN ////
 int main()
@@ -26,12 +27,12 @@ int main()
     //명령판단함수
 	judg();
 	
-    //각 배열(0~end) 자리배정함수 호출
+    //변수 판단
+   	variable();
+
+    //각 배열 자리배정함수 호출
     for(k = 0; k <= end; k++)
         pos_digit(k);
-
-    //변수 판단
-    variable();
 
     //연산자 판단, 계산
     for(int i = 1; i <= end; i++)
@@ -41,6 +42,13 @@ int main()
     }
     
     
+    for(int i = 0; i <= 10; i++)   //(확인작업)
+	{
+        printf("input[%d] = ", i);
+		for(int j = 0; j <= 61; j++)
+			printf("%c", input[i][j]);
+		printf("\n");
+	}
     
     for(int i = 0; i <= end; i++)   //(확인작업)
 	{
@@ -70,6 +78,12 @@ int input_f(void)
 {
 	int i, end;
 	char c;
+	
+	//input 초기화
+	for(int i = 0; i <= 1000; i++)
+		for(int j = 0; j <= 62; j++)
+			input[i][j] = 0;
+
 	printf("(input) ");
 	
 	for(i = 0; i <= 1000; i++)
@@ -156,7 +170,7 @@ void judg(void)
 {
 	if(strcmp(input[0], "clear") == 0)	system("clear");
 	if(strcmp(input[0], "end") == 0)	system("exit");
-    if(strcmp(input[0], "VAR") == 0)	printf("var call\n");
+    if(strcmp(input[0], "VAR") == 0)	varf();
 	if(strcmp(input[0], "save") == 0)	savef();
 	if(strcmp(input[0], "load") == 0)	loadf();
 
@@ -195,9 +209,9 @@ void variable(void)
                     if (var[j][0] == 0)
                     {
                         var[j][0] = c;
-                        for (i = 1; i <= 62; i++)
+                        for (i = 1; i <= 61; i++)
                         {
-                            var[j][i] = pass_operand[2][i-1];
+                            var[j][i] = input[2][i-1];
                         }
                         break;
                     }
@@ -221,10 +235,32 @@ void variable(void)
                   	// 그 알파벳이 var의 0번째 배열과 같으면
                     // 그 값을 받은 수식의 변수부분에 넣는다
                     for(m = j; m <= 61; m++)
-                        pass_operand[i][m] = var[k][m+1];
+                        input[i][m] = var[k][m+1];
     return;
 }
 
+//// 변 수 표 시 (VAR) 함 수 ////
+void varf(void)
+{
+    int i, j;
+    int gap = 'A' - 'a';
+    
+    for (i = 0; i < 10; i++)
+    {
+        if (var[i][0] >= 'A' && var[i][0] <= 'Z') // 대문자일때
+        {
+            printf("%c = ", var[i][0]);
+            for (j  = 1; j <= 61; j++)
+                printf("%c", var[i][j]);
+        }
+        if (var[i][0] >= 'a' && var[i][0] <= 'z') // 소문자일때 대문자로 출력
+        {
+            printf("%c = ", var[i][0] + gap);
+            for (j = 1; j <= 61; j++)
+                printf("%c", var[i][j]);
+        }
+    }
+}
 
 //// 변 수 저 장 함 수 ////
 void savef(void)
