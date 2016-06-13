@@ -15,6 +15,8 @@ int plus_equal(int);
 void savef(void);
 void loadf(void);
 void varf(void);
+int multi_main(void);
+int times_equal(int);
 
 //// MAIN ////
 int main()
@@ -252,12 +254,14 @@ void varf(void)
             printf("%c = ", var[i][0]);
             for (j  = 1; j <= 61; j++)
                 printf("%c", var[i][j]);
+			printf("\n");
         }
         if (var[i][0] >= 'a' && var[i][0] <= 'z') // 소문자일때 대문자로 출력
         {
             printf("%c = ", var[i][0] + gap);
             for (j = 1; j <= 61; j++)
                 printf("%c", var[i][j]);
+			printf("\n");
         }
     }
 }
@@ -305,10 +309,7 @@ int operator(int i)
 //                    minus_dif();
             break;
         case '*':
-//            if (pass_operand[i-1][1]==pass_operand[i+1][1])
-//                    multi_equal();
-//            else if(pass_operand[i-1][1]!=pass_operand[i+1][1])
-//                   multi_dif();
+            multi_main();
             break;
         case '/':
 //            if (pass_operand[i-1][1]==pass_operand[i+1][1])
@@ -364,3 +365,61 @@ int plus_equal(int i)   //부호같을때
     //중간 결과 값 저장 코딩 필요 
 	return 0;
 }
+
+
+//// 곱 셈 함 수 ////
+int multi_main()
+{
+    int j ;
+    int i = 1 ;
+    for(j = 61 ; j > 1 ; j--)
+    {
+        result[j] = result[j] * pass_operand[i + 1][j] - '0' ;
+        if(result[j]>'9')
+        {
+            result[j - 1] = result[j - 1] - result[j - 1]%10 ;
+            result[j] = result[j] % 10 ;
+        }
+    }
+    times_equal(i) ;
+    for(j = 0 ; j < 62 ; j++)
+    {
+        printf("result[%d] = %c\n", result[j]) ;
+    }
+    return 0 ;
+}
+int times_equal(int i)
+{
+    int j ;
+    for(j = 0 ; j < 62 ; j++)
+    {
+        pass_operand[i - 1][j] = '0' ;
+        pass_operand[i + 1][j] = '0' ;
+    }
+    for(j = 61 ; j > 1 ; j--)
+    {
+        result[j] = result[j] + pass_operand[i - 1][j] + pass_operand[i + 1][j] - '0' * 2 ;
+        if(j != 53)
+        {
+            if(result[j] > '9')
+            {
+                result[j - 1] = result[j - 1] - result[j - 1] % 10 ;
+                result[j] = result[j] % 10 ;
+            }
+            else
+            {
+                if(result[j] > '9')
+                {
+                    result[j - 2] = result[j - 2] - result[j - 2] % 10 ;
+                    result[j] = result[j] % 10 ;
+                }
+            }
+        }
+        result[52] = '1' ;
+        if(pass_operand[i - 1][1] == '-' && pass_operand[i + 1][1] == '-')
+        {
+            result[1] = '-' ;
+        }
+    }
+}
+
